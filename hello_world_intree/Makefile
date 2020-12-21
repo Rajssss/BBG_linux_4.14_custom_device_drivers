@@ -1,0 +1,1 @@
+obj-$(CONFIG_HELLO_WORLD_MODULE) += main.o

@@ -1,0 +1,5 @@
+menu "Rajssss test modules"
+config HELLO_WORLD_MODULE
+	tristate "Hello World Module."
+
+endmenu

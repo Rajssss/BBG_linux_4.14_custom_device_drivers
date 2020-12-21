@@ -7,3 +7,4 @@ Module.symvers
 *.cmd
 .tmp_versions/
 .cache.mk
+modules.builtin
