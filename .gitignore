@@ -8,3 +8,8 @@ Module.symvers
 .tmp_versions/
 .cache.mk
 modules.builtin
+
+.cproject
+.project
+.settings/
+*.prefs
