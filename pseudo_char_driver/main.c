@@ -33,7 +33,7 @@ ssize_t pcd_write(struct file *filp, const char __user *buff, size_t count, loff
 		count = DEV_MEM_SIZE - *f_pos;
 
 	if (!count) {
-		pr_info("No space left on device.\n");
+		pr_err("No space left on device.\n");
 		return -ENOMEM;
 	}
 
@@ -76,16 +76,46 @@ ssize_t pcd_read(struct file *filp, char __user *buff, size_t count, loff_t *f_p
 
 loff_t pcd_lseek(struct file *filp, loff_t offset, int whence)
 {
-	return 0;
+	loff_t tmp;
+
+	pr_info("seeking from file position %lld with whence %d\n", filp->f_pos, whence);
+
+	switch (whence) {
+	case SEEK_SET:
+		if ((offset > DEV_MEM_SIZE) || (offset < 0))
+			return -EINVAL;
+		filp->f_pos = offset;
+		break;
+	case SEEK_CUR:
+		tmp = filp->f_pos + offset;
+		if ((tmp > DEV_MEM_SIZE) || tmp < 0)
+			return -EINVAL;
+		filp->f_pos = tmp;
+		break;
+	case SEEK_END:
+		tmp = DEV_MEM_SIZE + offset;
+		if ((tmp > DEV_MEM_SIZE) || tmp < 0)
+			return -EINVAL;
+		filp->f_pos = tmp;
+		break;
+	default:
+		pr_err("Invalid whence!\n");
+		return -EINVAL;
+	}
+
+	pr_info("New file position: %lld\n", filp->f_pos);
+	return filp->f_pos;
 }
 
 int pcd_open(struct inode *inode, struct file *filp)
 {
+	pr_info("Successfully opened pcd.\n");
 	return 0;
 }
 
 int pcd_release(struct inode *inode, struct file *filp)
 {
+	pr_info("Successfully released pcd.\n");
 	return 0;
 }
 
